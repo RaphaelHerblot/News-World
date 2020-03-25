@@ -14,7 +14,7 @@ class requestAPI {
         };
 
         // Ajouter les données dans les requêtes POST et PUT
-        if( this.requestType === 'POST' || this.requestType === 'PUT'){
+        if( this.requestType === 'POST' || this.requestType === 'PUT' || this.requestType === 'DELETE'){
             this.requestHeader.body = JSON.stringify(data);
         };
     }

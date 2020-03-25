@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const lastName = document.querySelector('#lastName');
 
     const buttonDisconnect = document.querySelector('#buttonDisconnect');
-    const test = document.querySelector('.test');
+    const favSources = document.querySelector('#favSources');
     const listFavorite = document.querySelector('#listFavorite')
 
     const loginForm = document.querySelector('#loginForm');
@@ -48,7 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Hide register and loggin form
                 register.classList.add('hidden');
                 login.classList.add('hidden');
+                search.style.display = "flex";
                 buttonDisconnect.style.display = "initial";
+                favSources.style.display = "initial";
                 hiStranger.innerHTML = `Hi ${fetchData.data.user.firstname} !`;
                 // Display nav
                 // displayNav(fetchData.data.user.pseudo);
@@ -80,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(lastName.value.length < 3) { formError++ };
 
             if(formError === 0){
-                new requestAPI(`${apiUrl}/register`, 'POST', { 
+                new requestAPI(`${apiURL}/register`, 'POST', { 
                     email: email.value,
                     password: password.value,
                     firstname: firstName.value,
@@ -148,18 +150,21 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const displayFav = (favData) => {
+        favSources.innerHTML = '';
         listFavorite.innerHTML = '';
         for(let fav of favData.data.bookmark){
             console.log(fav._id);
-            listFavorite.innerHTML += `<span>${fav.name}  <button class="buttonDeleteFav" news-id="${fav._id}" type="submit">X</button> </span>`;
+            favSources.innerHTML = "Your favorites sources of news"
+            listFavorite.innerHTML += `<span>${fav.name}  <button class="buttonDeleteFav btn btn-danger" news-id="${fav._id}" type="submit">X</button> </span>`;
         }
-        // deleteFavorite(document.querySelectorAll('.buttonDeleteFav'));      
+        deleteFavorite(document.querySelectorAll('.buttonDeleteFav'));      
     }
 
     const newFavorite = (favoriteData) => {
         const buttonFavorite = document.querySelectorAll('.buttonFav');
         console.log(favoriteData);
-
+        console.log("test");
+        console.log(buttonFavorite);
         for(let button of buttonFavorite){
             button.addEventListener('click', () => {
                 let i = button.getAttribute('ref-id')
@@ -190,23 +195,23 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // const deleteFavorite = favoriteData => {
-    //     for( let fav of favoriteData ){
-    //         console.log(fav.getAttribute('news-id'))
-    //         console.log(localStorage.getItem(localSt))
-    //         console.log(apiURL+'/bookmark/'+fav.getAttribute('news-id'))
-    //         fav.addEventListener('click', () => {
-    //             new requestAPI( `${apiURL}/bookmark/${fav.getAttribute('news-id')}`, 'DELETE', {
-    //                 token: localStorage.getItem(localSt)
-    //             })
-    //             .callAPI()
-    //             .then( fetchData => checkToken('favorite'))
-    //             .catch( fetchError => {
-    //                 console.log(fetchError)
-    //             })
-    //         })
-    //     }
-    // }
+    const deleteFavorite = favoriteData => {
+        console.log(favoriteData)
+        for( let fav of favoriteData ){
+            console.log(apiURL+'/bookmark/'+fav.getAttribute('news-id'))
+            fav.addEventListener('click', () => {
+                console.log("LOOL")
+                new requestAPI(`${apiURL}/bookmark/${fav.getAttribute('news-id')}`, 'DELETE', {
+                    token: localStorage.getItem(localSt)
+                })
+                .callAPI()
+                .then( fetchData => checkToken('favorite'))
+                .catch( fetchError => {
+                    console.log(fetchError)
+                })
+            })
+        } 
+    }
 
     const logOut = () => {
         buttonDisconnect.addEventListener('click', () => {
@@ -232,9 +237,13 @@ document.addEventListener('DOMContentLoaded', () => {
         articles.forEach(article => {
             articlesSection.innerHTML += `
                 <article>
+                    <img src="${article.urlToImage}">
                     <h2>${article.title}</h2>
-                    <span>${simplifyDate(article.publishedAt)} - ${article.source.name}  <button class="buttonFav" ref-id="${count}" type="submit">Fav</button> - ${article.author}</span>
-                    <p>${article.description}</p>
+                    <div class="content">
+                        <span>${simplifyDate(article.publishedAt)} - ${article.source.name}  <button class="buttonFav btn btn-dark btn-sm" ref-id="${count}" type="submit">Fav</button></span>
+                        <p>${article.description}</p>
+                        <span>${article.author}</span>
+                    </div>
                 </article>`
             count++;
             })
@@ -256,15 +265,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${day}/${newDate[1]}/${newDate[0]}`
     }
 
-    // async function searchArticles(sourceList, searchData) {
-    //     const articles = new requestAPI(`${apiURL}/news/${sourceList}/${searchData}`, 'POST', {
-    //         "news_api_token": "4ac860c120bb494a8835bfa8f6ea3ca8"
-    //     })
-    //     console.log(articles)
-    //     const articleList = await articles.callAPI()
-    //     createArticles(articleList.data.articles)
-    // }
-
     async function searchArticles(sourceList, searchData) {
         const articles = new requestAPI(`${apiURL}/news/${sourceList}/${searchData}`, 'POST', {
             "news_api_token": "4ac860c120bb494a8835bfa8f6ea3ca8"
@@ -279,17 +279,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayMsg(error)
         })
     }
-
-    // async function handleArticles() {
-    //     const articles = new requestAPI(`${apiURL}/news/nbc-news/null`, 'POST', {
-    //         "news_api_token": "4ac860c120bb494a8835bfa8f6ea3ca8"
-    //     })
-    //     console.log("yo")
-    //     console.log(articles)
-    //     console.log("yo")
-    //     const articleList = await articles.callAPI()
-    //     createArticles(articleList.data.articles)
-    // }
 
     async function searchSources() {
         const sources = new requestAPI(`${apiURL}/news/sources`, 'POST', {
@@ -310,7 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
         getHomeSubmit();
     };
 
-    // handleArticles()
     searchSources();
     logOut();
     
