@@ -1,0 +1,11 @@
+.hidden {
+    display: none;
+}
+
+.open {
+    display : initial;
+}
+
+#buttonDisconnect {
+    display: none;
+}

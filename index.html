@@ -14,16 +14,48 @@
 <body>
     <header>
         <h1>News World</h1>
+        <button id="buttonDisconnect" type="submit">Disconnect</button>
+        <h2 id="hiStranger"></h2>
+        <p id="listFavorite"></p>
+        <div id="register">
+            <h2>Register</h2>
+            <form id="registerForm" action="#">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="email">
+                <label for="password">Password</label>
+                <input type="text" name="password" id="password">
+                <label for="pseudo">First Name</label>
+                <input type="text" name="firstName" id="firstName">
+                <label for="pseudo">Last Name</label>
+                <input type="text" name="lastName" id="lastName">
+                <button type="sumbit">Register</button>
+            </form>
+        </div>
+
+        <div id="login">
+        <h2>Connexion</h2>
+            <form id="loginForm" action="#">
+                <label for="email">Email</label>
+                <input type="text" name="email" id="emailLogin">
+                <label for="password">Password</label>
+                <input type="text" name="password" id="passwordLogin">
+                <button type="sumbit">Connexion</button>
+            </form>
+        </div>
+
+        <h2>Searching</h2>
         <form id="searchForm" action="#">
+            <SELECT name="nom" id="sourceList" size="1">
+            </SELECT>
             <label for="searchData">Search a news<span></span></label>
             <input type="text" name="searchData" id="searchData" minlength="1" required>
             <button type="submit">Search</button>
         </form>
     </header>
     <main>
-        <section id="movieList"></section>
-        
+        <section id="articleList"></section>
     </main>
+    <script src="./js/fetchClass.js"></script>
     <script src="./js/app.js"></script>
 </body>
 </html>

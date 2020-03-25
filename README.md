@@ -3,8 +3,9 @@ Site web permettant la recherche d'une multitude de news dans le monde avec plus
 Features disponibles :
 
 - Formulaire de recherche
+- Inscription/Connexion
+- Possibilité de mettre une source en favori
 
 Features qui seront disponibles :
 
-- Inscription/Connexion
-- Possibilité de mettre une news en favori
+- Supprimer une source mise en favori
