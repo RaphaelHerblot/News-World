@@ -14,6 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const buttonDisconnect = document.querySelector('#buttonDisconnect');
     const favSources = document.querySelector('#favSources');
     const listFavorite = document.querySelector('#listFavorite')
+    const bookmarkButton = document.querySelector('#addToBookmark');
+    const alreadyBookmarked = document.querySelector('#alreadyInBookmark');
+    const sourceBookmarked = document.querySelector('.sourceBookmarked');
 
     const loginForm = document.querySelector('#loginForm');
     const emailLogin = document.querySelector('#emailLogin');
@@ -21,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiStranger = document.querySelector('#hiStranger')
     let emailVar = null;
     let passwordVar = null;
+    var idCheck = 3;
     const localSt = 'user';
 
     const searchForm = document.querySelector('#searchForm');
@@ -65,6 +69,33 @@ document.addEventListener('DOMContentLoaded', () => {
         .catch( fetchError => {
             console.log(fetchError)
         })
+    }
+
+    const checkFavorite = (favoriteID) => {
+        new requestAPI(
+            `${apiURL}/me`,
+            'POST', {
+                token: localStorage.getItem(localSt)
+            }
+        )
+        .callAPI()
+        .then( fetchData => {
+            idCheck = 0;
+            for( let fav of fetchData.data.bookmark ){
+               if(fav.id == favoriteID.id) {
+                idCheck = 1;
+               }
+            }
+            displayFav(fetchData)
+            alreadyFavorite(idCheck, favoriteID.name)
+        })
+        .catch( fetchError => {
+            console.log(fetchError)
+        })
+    }
+
+    const idCheckSetter = (id) => {
+         idCheck = id;
     }
 
     const getHomeSubmit = () => {
@@ -152,8 +183,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const displayFav = (favData) => {
         favSources.innerHTML = '';
         listFavorite.innerHTML = '';
+        console.log(localStorage)  
+
         for(let fav of favData.data.bookmark){
-            console.log(fav._id);
             favSources.innerHTML = "Your favorites sources of news"
             listFavorite.innerHTML += `<span>${fav.name}  <button class="buttonDeleteFav btn btn-danger" news-id="${fav._id}" type="submit">X</button> </span>`;
         }
@@ -162,55 +194,81 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const newFavorite = (favoriteData) => {
         const buttonFavorite = document.querySelectorAll('.buttonFav');
-        console.log(favoriteData);
-        console.log("test");
-        console.log(buttonFavorite);
         for(let button of buttonFavorite){
+            let i = button.getAttribute('ref-id')
+            checkFavorite(favoriteData.articles[i].source);
             button.addEventListener('click', () => {
-                let i = button.getAttribute('ref-id')
-                try {
-                    new requestAPI(`${apiURL}/bookmark`, 'POST', {
-                            id: favoriteData.articles[i].source.id,
-                            name: favoriteData.articles[i].source.name,
-                            description: favoriteData.articles[i].description,
-                            url: favoriteData.articles[i].url,
-                            category: 'general',
-                            language: 'fr',
-                            country: 'FR',
-                            token: localStorage.getItem(localSt)
-                        }
-                    )
-                    .callAPI()
-                    .then( data => {
-                        displayMsg(data.message)
-                    })
-                    .catch( error => {
-                        displayMsg(error)
-                    })
-                    checkToken('favorite')
-                } catch {
-                    displayMsg('Error you fucked up')
+                if(idCheck == 0) {
+                    try {
+                        new requestAPI(`${apiURL}/bookmark`, 'POST', {
+                                id: favoriteData.articles[i].source.id,
+                                name: favoriteData.articles[i].source.name,
+                                description: favoriteData.articles[i].description,
+                                url: favoriteData.articles[i].url,
+                                category: 'general',
+                                language: 'fr',
+                                country: 'FR',
+                                token: localStorage.getItem(localSt)
+                            }
+                        )
+                        .callAPI()
+                        .then( data => {
+                            displayMsg(data.message)
+                            checkToken('favorite')
+                            checkFavorite(favoriteData.articles[i].source);
+                            alreadyFavorite(1, favoriteData.articles[i].source.name)
+                            console.log("LOLILOLILOLILOLI")
+                        })
+                        .catch( error => {
+                            displayMsg(error)
+                        })
+                        
+                    } catch {
+                        displayMsg('Error you fucked up')
+                    }
+                }
+                else {
+                    console.log("Already in your bookmark")
                 }
             })            
         }
     }
 
     const deleteFavorite = favoriteData => {
-        console.log(favoriteData)
         for( let fav of favoriteData ){
-            console.log(apiURL+'/bookmark/'+fav.getAttribute('news-id'))
             fav.addEventListener('click', () => {
-                console.log("LOOL")
                 new requestAPI(`${apiURL}/bookmark/${fav.getAttribute('news-id')}`, 'DELETE', {
                     token: localStorage.getItem(localSt)
                 })
                 .callAPI()
-                .then( fetchData => checkToken('favorite'))
+                .then( fetchData =>  {
+                    idCheckSetter(0);
+                    checkToken('favorite')
+                    console.log(fetchData.data.name)
+                    alreadyFavorite(idCheck, fetchData.data.name)
+                })
                 .catch( fetchError => {
                     console.log(fetchError)
                 })
             })
         } 
+    }
+
+    const alreadyFavorite = (idCheck, sourceName) => {
+        console.log(sourceBookmarked)
+        console.log("ATTEND LA")
+        console.log(idCheck)
+        console.log(sourceName)
+        if(idCheck == 0) {
+            bookmarkButton.style.display = "flex";
+            alreadyBookmarked.style.display = "none";
+        }
+        else {
+            bookmarkButton.style.display = "none";
+            alreadyBookmarked.style.display = "flex";
+            // alreadyBookmarked
+            sourceBookmarked.innerHTML = `${sourceName} `
+        }
     }
 
     const logOut = () => {
@@ -234,13 +292,14 @@ document.addEventListener('DOMContentLoaded', () => {
         articleList.innerHTML = '';
         const articlesSection = document.querySelector('#articleList')
         let count = 0;
+        bookmarkButton.innerHTML = `<button class="buttonFav btn btn-info btn-sm" ref-id="${count}" type="submit">Add <b>${articles[count].source.name}</b> to your bookmark</button></span>`
         articles.forEach(article => {
             articlesSection.innerHTML += `
                 <article>
                     <img src="${article.urlToImage}">
                     <h2>${article.title}</h2>
                     <div class="content">
-                        <span>${simplifyDate(article.publishedAt)} - ${article.source.name}  <button class="buttonFav btn btn-dark btn-sm" ref-id="${count}" type="submit">Fav</button></span>
+                        <span>${simplifyDate(article.publishedAt)} - ${article.source.name}
                         <p>${article.description}</p>
                         <span>${article.author}</span>
                     </div>

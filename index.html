@@ -7,6 +7,43 @@
         <title>News World</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <link rel="stylesheet" href="./css/style.css">
+        <link rel="manifest" href="./manifest.json">
+
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="News Feed">
+        
+        <meta name="application-name" content="News">
+        <meta name="apple-mobile-web-app-title" content="News">
+        <meta name="theme-color" content="#999999">
+        <meta name="msapplication-navbutton-color" content="#ffffff">
+        <meta name="msapplication-starturl" content="/index.html">
+        
+        <link rel="icon" sizes="192x192" href="./img/icons/icon-192x192.png">
+        <link rel="icon" sizes="128x128" href="./img/icons/icon-128x128.png">
+        <link rel="apple-touch-icon" sizes="128x128" href="./img/icons/icon-128x128.png">
+        <link rel="apple-touch-icon-precomposed" sizes="128x128" href="./img/icons/icon-128x128.png">
+
+        <script>
+            // This is the service worker with the Cache-first network
+            // Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
+            // Check compatibility for the browser we're running this in
+            if ("serviceWorker" in navigator) {
+                if (navigator.serviceWorker.controller) {
+                    console.log("[PWA Builder] active service worker found, no need to register");
+                } else {
+                    // Register the service worker
+                    navigator.serviceWorker
+                    .register("./service.worker.js", {
+                    scope: "./"
+                    })
+                    .then(function (reg) {
+                        console.log("[PWA Builder] Service worker has been registered for scope: " + reg.scope);
+                    });
+                }
+            }
+        </script>
     </head>
 </head>
 <body>
@@ -15,7 +52,6 @@
             <h1>News World</h1>
             <img id="icon" src="./img/world-icon.png" alt="">
         </div>
-        <button id="buttonDisconnect" class="btn btn-dark" type="submit">Disconnect</button>
     </header>
     <section>
         <div id="account" class="form-group">
@@ -33,8 +69,9 @@
                     <button type="sumbit" class="btn btn-secondary">Register</button>
                 </form>
             </div>
+
             <div id="login">
-            <h2>Connexion</h2>
+                <h2>Connexion</h2>
                 <form id="loginForm" action="#">
                     <label for="email">Email</label>
                     <input type="text" name="email" id="emailLogin" class="form-control">
@@ -44,10 +81,18 @@
                 </form>
             </div>
         </div>
-        <h2 id="hiStranger"></h2>
-        <h3 id ="favSources"></h3>
-        <p id="listFavorite"></p>
+
+        <div id="user">
+            <h2 id="hiStranger"></h2>
+            <button id="buttonDisconnect" class="btn btn-danger" type="submit">Logout</button>
+        </div>
+
+        <div id="favoriteContent">
+            <h3 id ="favSources"></h3>
+            <p id="listFavorite"></p>
+        </div>
     </section>
+
     <main>
         <div id="search">
             <h2>Searching</h2>
@@ -60,9 +105,12 @@
                 <button type="submit" class="btn btn-secondary">Search</button>
             </form>
         </div>
-
-        <section id="articleList"></section>
+        <div id="addToBookmark"></div>
+        <div id="alreadyInBookmark"><button class="alreadyInBookmarkButton btn alert-secondary btn-sm" type="submit"><b class="sourceBookmarked"></b>is in your Bookmark !</button></div>
+        <section id="articleList">
+        </section>
     </main>
+
     <script src="./js/fetchClass.js"></script>
     <script src="./js/app.js"></script>
 </body>

@@ -27,7 +27,7 @@ header {
     box-shadow: 0px 6px 5px -1px rgba(157, 157, 157, 0.4);
 }
 
-section, main {
+section, main, #addToBookmark, #alreadyInBookmark {
     padding: 20px 30px;
 }
 
@@ -44,8 +44,8 @@ article {
     justify-content: flex-start;
     flex-direction: column;
     align-items: center;
-    width: 45%;
-    margin: 20px 0;
+    width: 600px;
+    margin: 20px 5px;
     padding: 15px;
     border-radius: 8px;
     background-color: #fdb200;
@@ -95,6 +95,13 @@ article span {
     justify-content: space-between;
 }
 
+#user {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
 #search {
     display: none;
     flex-direction: column;
@@ -125,15 +132,44 @@ article span {
 
 }
 
+#addToBookmark {
+    display: flex;
+    justify-content: center;
+}
+
+#alreadyInBookmark {
+    display: none;
+    justify-content: center;
+}
+
+.alreadyInBookmarkButton {
+    pointer-events: none;
+}
+
+.buttonFav, .alreadyInBookmarkButton {
+    font-size: 20px;
+}
+
 #listFavorite {
     display: flex;
     flex-wrap: wrap;
     margin-top: 15px;
 }
 
+#listFavorite span {
+    margin-top: 10px;
+}
+
 #listFavorite span button {
     margin-top: 0;
     margin-right: 18px;
+}
+
+#favoriteContent {
+    border: 5px solid #916c00;
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 20px;
 }
 
 .btn {
@@ -147,9 +183,12 @@ article span {
     display : initial;
 }
 
-#buttonDisconnect {
-    display: none;
-    position: absolute; /* postulat de départ */
-    top: 40%; right: -2%; /* à 50%/50% du parent référent */
-    transform: translate(-50%, -50%); /* décalage de 50% de sa propre taille */
+@media screen and (max-width: 640px) {
+    #searchForm {
+        width: 100%
+    }
+
+    #articleList {
+        padding: 20px 0;
+    }
 }
