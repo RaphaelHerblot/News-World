@@ -8,9 +8,10 @@ Features disponibles :
     - Inscription/Connexion
     - Possibilité de mettre une source en favori
     - Supprimer les favoris
+    - PWA simple initialisé
+    - Responsive (à revoir)
 
 Features qui seront disponibles :
 
-    - Ne plus pouvoir ajouter deux fois la même source en favori
     - Amélioration globale du style
 
