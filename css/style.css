@@ -96,7 +96,7 @@ article span {
 }
 
 #user {
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -166,6 +166,7 @@ article span {
 }
 
 #favoriteContent {
+    display: none;
     border: 5px solid #916c00;
     margin-top: 30px;
     padding: 20px;

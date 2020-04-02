@@ -17,11 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookmarkButton = document.querySelector('#addToBookmark');
     const alreadyBookmarked = document.querySelector('#alreadyInBookmark');
     const sourceBookmarked = document.querySelector('.sourceBookmarked');
+    const favoriteContent = document.querySelector('#favoriteContent')
 
     const loginForm = document.querySelector('#loginForm');
     const emailLogin = document.querySelector('#emailLogin');
     const passwordLogin = document.querySelector('#passwordLogin');
-    const hiStranger = document.querySelector('#hiStranger')
+    const hiStranger = document.querySelector('#hiStranger');
+    const user = document.querySelector('#user')
     let emailVar = null;
     let passwordVar = null;
     var idCheck = 3;
@@ -55,6 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 search.style.display = "flex";
                 buttonDisconnect.style.display = "initial";
                 favSources.style.display = "initial";
+                user.style.display = "flex";
+                favoriteContent.style.display = "block";
                 hiStranger.innerHTML = `Hi ${fetchData.data.user.firstname} !`;
                 // Display nav
                 // displayNav(fetchData.data.user.pseudo);
